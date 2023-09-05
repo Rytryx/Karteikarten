@@ -16,9 +16,14 @@ const MSGS = {
   DELETE_CARD: "DELETE_CARD",
   NEXT_CARD: "NEXT_CARD",
   PREVIOUS_CARD: "PREVIOUS_CARD",
+  TOGGLE_ANSWER: "TOGGLE_ANSWER",
+  EDIT_CARD: "EDIT_CARD",
+  SAVE_EDIT: "SAVE_EDIT",
 };
 
 function view(dispatch, model) {
+  const card = model.cards[model.currentIndex];
+
   return div({ className: "flex gap-4 flex-col items-center" }, [
     h1({ className: "text-2xl" }, `Flashcard App:`),
 
@@ -45,10 +50,43 @@ function view(dispatch, model) {
 
     div({ className: "flex flex-col mt-4" },
       model.cards.length > 0 ? [
-        p({}, `Card ${model.currentIndex + 1}:`),
-        p({}, `Question: ${model.cards[model.currentIndex].question}`),
-        p({}, `Answer: ${model.cards[model.currentIndex].answer}`),
-        div({ className: "flex gap-2" }, [
+        div({ className: "rounded-lg shadow-lg p-4 bg-white w-96" }, [
+          h1({ className: "text-xl font-semibold mb-2" }, "Card:"),
+          card.editing ? // Prüfen, ob die Karte bearbeitet wird
+            div({ className: "mb-4" }, [
+              input({
+                className: "border p-2",
+                oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_QUESTION, data: event.target.value }),
+                value: model.inputQuestion,
+                placeholder: "Edit question...",
+              }),
+              input({
+                className: "border p-2",
+                oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_ANSWER, data: event.target.value }),
+                value: model.inputAnswer,
+                placeholder: "Edit answer...",
+              }),
+              button(
+                { className: `${btnStyle} bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.SAVE_EDIT }) },
+                "Save Edit"
+              ),
+            ]) :
+            div({ className: "mb-4" }, card.question),
+          button(
+            { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD }) },
+            "Delete Card"
+          ),
+          button(
+            { className: `${btnStyle} bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.TOGGLE_ANSWER }) },
+            card.showAnswer ? "Hide Answer" : "Show Answer"
+          ),
+          card.showAnswer ? div({ className: "mb-4" }, card.answer) : null,
+          button(
+            { className: `${btnStyle} bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.EDIT_CARD }) },
+            "Edit Card"
+          ),
+        ]),
+        div({ className: "flex gap-2 mt-4" }, [
           button(
             { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.PREVIOUS_CARD }) },
             "Previous"
@@ -58,10 +96,6 @@ function view(dispatch, model) {
             "Next"
           ),
         ]),
-        button(
-          { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD }) },
-          "Delete Card"
-        ),
       ] : [
         p({}, "No cards available."),
       ]
@@ -85,7 +119,7 @@ function update(msg, model) {
           inputAnswer: "",
           cards: [
             ...model.cards,
-            { question: model.inputQuestion, answer: model.inputAnswer },
+            { question: model.inputQuestion, answer: model.inputAnswer, showAnswer: false, editing: false }, // Antwort standardmäßig ausblenden, nicht bearbeiten
           ],
         };
       } else {
@@ -113,6 +147,27 @@ function update(msg, model) {
       if (model.cards.length > 0) {
         const previousIndex = (model.currentIndex - 1 + model.cards.length) % model.cards.length;
         return { ...model, currentIndex: previousIndex };
+      } else {
+        return model;
+      }
+
+    case MSGS.TOGGLE_ANSWER:
+      const updatedCardsWithToggle = [...model.cards];
+      updatedCardsWithToggle[model.currentIndex].showAnswer = !updatedCardsWithToggle[model.currentIndex].showAnswer;
+      return { ...model, cards: updatedCardsWithToggle };
+
+    case MSGS.EDIT_CARD:
+      const updatedCardsWithEdit = [...model.cards];
+      updatedCardsWithEdit[model.currentIndex].editing = true; // Karte bearbeiten
+      return { ...model, inputQuestion: updatedCardsWithEdit[model.currentIndex].question, inputAnswer: updatedCardsWithEdit[model.currentIndex].answer, cards: updatedCardsWithEdit };
+
+    case MSGS.SAVE_EDIT:
+      if (model.inputQuestion !== "" && model.inputAnswer !== "") {
+        const updatedCardsForEdit = [...model.cards];
+        updatedCardsForEdit[model.currentIndex].question = model.inputQuestion;
+        updatedCardsForEdit[model.currentIndex].answer = model.inputAnswer;
+        updatedCardsForEdit[model.currentIndex].editing = false; // Bearbeiten beenden
+        return { ...model, inputQuestion: "", inputAnswer: "", cards: updatedCardsForEdit };
       } else {
         return model;
       }
