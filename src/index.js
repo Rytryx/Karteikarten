@@ -10,130 +10,113 @@ const input = (props) => h("input", props);
 const btnStyle = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
 
 const MSGS = {
-  INPUT_CHANGE_CALORIES: "INPUT_CHANGE_CALORIES",
-  INPUT_CHANGE_FOOD: "INPUT_CHANGE_FOOD",
-  ADD_ENTRY: "ADD_ENTRY",
-  SEND_ENTRY: "SEND_ENTRY",
-  CANCEL_ENTRY: "CANCEL_ENTRY",
-  DELETE_ENTRY: "DELETE_ENTRY",
-  DELETE_ALL_ENTRIES: "DELETE_ALL_ENTRIES", 
+  INPUT_CHANGE_QUESTION: "INPUT_CHANGE_QUESTION",
+  INPUT_CHANGE_ANSWER: "INPUT_CHANGE_ANSWER",
+  ADD_CARD: "ADD_CARD",
+  DELETE_CARD: "DELETE_CARD",
+  NEXT_CARD: "NEXT_CARD",
+  PREVIOUS_CARD: "PREVIOUS_CARD",
 };
 
 function view(dispatch, model) {
-  const totalCalories = model.entries.reduce((total, entry) => total + parseInt(entry.calories), 0);
-
   return div({ className: "flex gap-4 flex-col items-center" }, [
-    h1({ className: "text-2xl" }, `Calorie calculator:`),
+    h1({ className: "text-2xl" }, `Flashcard App:`),
 
     div({ className: "flex gap-4 items-center" }, [
       input({
         className: "border p-2",
-        oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_CALORIES, data: event.target.value }),
-        onkeydown: (event) => {
-          if (event.key === "Enter") {
-            dispatch({ type: MSGS.ADD_ENTRY });
-          }
-        },
-        value: model.inputCalories,
-        placeholder: "Enter calories...",
+        oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_QUESTION, data: event.target.value }),
+        value: model.inputQuestion,
+        placeholder: "Enter question...",
       }),
 
       input({
         className: "border p-2",
-        oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_FOOD, data: event.target.value }),
-        onkeydown: (event) => {
-          if (event.key === "Enter") {
-            dispatch({ type: MSGS.ADD_ENTRY });
-          }
-        },
-        value: model.inputFood,
-        placeholder: "Enter food...",
+        oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_ANSWER, data: event.target.value }),
+        value: model.inputAnswer,
+        placeholder: "Enter answer...",
       }),
 
       button(
-        { className: `${btnStyle} bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.SEND_ENTRY }) },
-        "Add"
-      ),
-      
-      button(
-        { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.CANCEL_ENTRY }) },
-        "Cancel"
+        { className: `${btnStyle} bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.ADD_CARD }) },
+        "Add Card"
       ),
     ]),
 
     div({ className: "flex flex-col mt-4" },
-      model.entries.map((entry, index) => div({ className: "flex items-center gap-2" }, [
-        p({}, `Eintrag ${index + 1}: ${entry.calories} kcal - ${entry.food}`),
+      model.cards.length > 0 ? [
+        p({}, `Card ${model.currentIndex + 1}:`),
+        p({}, `Question: ${model.cards[model.currentIndex].question}`),
+        p({}, `Answer: ${model.cards[model.currentIndex].answer}`),
+        div({ className: "flex gap-2" }, [
+          button(
+            { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.PREVIOUS_CARD }) },
+            "Previous"
+          ),
+          button(
+            { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.NEXT_CARD }) },
+            "Next"
+          ),
+        ]),
         button(
-          { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_ENTRY, index }) },
-          "Delete"
+          { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD }) },
+          "Delete Card"
         ),
-      ]))
+      ] : [
+        p({}, "No cards available."),
+      ]
     ),
-
-    button(
-      { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_ALL_ENTRIES }) }, 
-      "Delete All"
-    ),
-
-    div({ className: "flex gap-4 items-center" }, [
-      p({ className: "text-xl font-bold mt-4" }, `Total Calories: ${totalCalories}`),
-    ]),
   ]);
 }
 
 function update(msg, model) {
   switch (msg.type) {
-    case MSGS.INPUT_CHANGE_CALORIES:
-      return { ...model, inputCalories: msg.data };
+    case MSGS.INPUT_CHANGE_QUESTION:
+      return { ...model, inputQuestion: msg.data };
 
-    case MSGS.INPUT_CHANGE_FOOD:
-      return { ...model, inputFood: msg.data };
+    case MSGS.INPUT_CHANGE_ANSWER:
+      return { ...model, inputAnswer: msg.data };
 
-    case MSGS.ADD_ENTRY:
-      return {
-        ...model,
-        inputCalories: "",
-        inputFood: "",
-        entries: [
-          ...model.entries,
-          { calories: model.inputCalories, food: model.inputFood },
-        ],
-      };
-
-    case MSGS.SEND_ENTRY:
-      if (model.inputCalories !== "" && model.inputFood !== "") {
+    case MSGS.ADD_CARD:
+      if (model.inputQuestion !== "" && model.inputAnswer !== "") {
         return {
           ...model,
-          inputCalories: "",
-          inputFood: "",
-          entries: [
-            ...model.entries,
-            { calories: model.inputCalories, food: model.inputFood },
+          inputQuestion: "",
+          inputAnswer: "",
+          cards: [
+            ...model.cards,
+            { question: model.inputQuestion, answer: model.inputAnswer },
           ],
         };
       } else {
         return model;
       }
 
-    case MSGS.CANCEL_ENTRY:
-      return {
-        ...model,
-        inputCalories: "",
-        inputFood: "",
-      };
-
-    case MSGS.DELETE_ENTRY:
-      if (model.entries.length > msg.index) {
-        const updatedEntries = [...model.entries];
-        updatedEntries.splice(msg.index, 1);
-        return { ...model, entries: updatedEntries };
+    case MSGS.DELETE_CARD:
+      if (model.cards.length > 0) {
+        const updatedCards = [...model.cards];
+        updatedCards.splice(model.currentIndex, 1);
+        return { ...model, cards: updatedCards, currentIndex: 0 };
       } else {
         return model;
       }
 
-    case MSGS.DELETE_ALL_ENTRIES: 
-      return { ...model, entries: [] }; 
+    case MSGS.NEXT_CARD:
+      if (model.cards.length > 0) {
+        const nextIndex = (model.currentIndex + 1) % model.cards.length;
+        return { ...model, currentIndex: nextIndex };
+      } else {
+        return model;
+      }
+
+    case MSGS.PREVIOUS_CARD:
+      if (model.cards.length > 0) {
+        const previousIndex = (model.currentIndex - 1 + model.cards.length) % model.cards.length;
+        return { ...model, currentIndex: previousIndex };
+      } else {
+        return model;
+      }
+
     default:
       return model;
   }
@@ -155,9 +138,10 @@ function app(initModel, update, view, node) {
 }
 
 const initModel = {
-  inputCalories: "",
-  inputFood: "",
-  entries: [],
+  inputQuestion: "",
+  inputAnswer: "",
+  cards: [],
+  currentIndex: 0,
 };
 
 const rootNode = document.getElementById("app");
