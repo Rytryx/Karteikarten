@@ -7,7 +7,7 @@ const p = (props, children) => h("p", props, children);
 const h1 = (props, children) => h("h1", props, children);
 const input = (props) => h("input", props);
 
-const btnStyle = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
+const btnStyle = " font-bold py-2 px-4 rounded";
 
 const MSGS = {
   INPUT_CHANGE_QUESTION: "INPUT_CHANGE_QUESTION",
@@ -49,16 +49,16 @@ function view(dispatch, model) {
         ]) :
         div({ className: "mb-4" }, card.question),
       button(
-        { className: `${btnStyle} bg-red-500 hover.bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD, data: index }) },
+        { className: `${btnStyle} hover.text-red-600 text-red-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD, data: index }) },
         "Delete Card"
       ),
       button(
-        { className: `${btnStyle} bg-blue-500 hover.bg-blue-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.TOGGLE_ANSWER, data: index }) },
+        { className: `${btnStyle} hover.text-blue-700 text-blue-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.TOGGLE_ANSWER, data: index }) },
         card.showAnswer ? "Hide Answer" : "Show Answer"
       ),
       card.showAnswer ? div({ className: "mb-4" }, card.answer) : null,
       button(
-        { className: `${btnStyle} bg.yellow-500 hover.bg-yellow-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.EDIT_CARD, data: index }) },
+        { className: `${btnStyle} hover.text-yellow-700 text-yellow-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.EDIT_CARD, data: index }) },
         "Edit Card"
       ),
       div({ className: "flex gap-2 mt-4" }, [
