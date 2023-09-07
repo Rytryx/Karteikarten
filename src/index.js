@@ -147,16 +147,12 @@ function update(msg, model) {
 
     case MSGS.DELETE_CARD:
       if (model.cards.length > 0) {
-        const updatedCategories = [...model.categories];
-        updatedCategories.forEach((category) => {
-          const indexInCategory = category.cards.indexOf(msg.data);
-          if (indexInCategory !== -1) {
-            category.cards.splice(indexInCategory, 1);
-          }
+        const updatedCategories = model.categories.map((category) => {
+          const updatedCards = category.cards.filter((cardIndex) => cardIndex !== msg.data);
+          return { ...category, cards: updatedCards };
         });
 
-        const updatedCards = [...model.cards];
-        updatedCards.splice(msg.data, 1);
+        const updatedCards = model.cards.filter((_, index) => index !== msg.data);
 
         return { ...model, categories: updatedCategories, cards: updatedCards };
       } else {
