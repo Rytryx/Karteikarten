@@ -2,7 +2,6 @@
   "name": "example_project",
   "version": "1.0.1",
   "description": "An example project for all module 323 exercises",
-  "type": "module",
   "scripts": {
     "test": "jest",
     "dev": "webpack serve --mode development",
