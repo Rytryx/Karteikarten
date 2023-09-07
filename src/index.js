@@ -33,45 +33,45 @@ function view(dispatch, model) {
           input({
             className: "border p-2",
             oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_QUESTION, data: event.target.value }),
-            value: card.question, // Hier verwenden wir card.question
+            value: model.inputQuestion, // Hier verwenden wir model.inputQuestion
             placeholder: "Edit question...",
           }),
           input({
             className: "border p-2",
             oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_ANSWER, data: event.target.value }),
-            value: card.answer, // Hier verwenden wir card.answer
+            value: model.inputAnswer, // Hier verwenden wir model.inputAnswer
             placeholder: "Edit answer...",
           }),
           button(
-            { className: `${btnStyle} bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.SAVE_EDIT, data: index }) },
+            { className: `${btnStyle} hover.text-yellow-700 text-yellow-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.SAVE_EDIT, data: index }) },
             "Save Edit"
           ),
         ]) :
         div({ className: "mb-4" }, card.question),
       button(
-        { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD, data: index }) },
+        { className: `${btnStyle} bg-red-500 hover.bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD, data: index }) },
         "Delete Card"
       ),
       button(
-        { className: `${btnStyle} bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.TOGGLE_ANSWER, data: index }) },
+        { className: `${btnStyle} bg-blue-500 hover.bg-blue-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.TOGGLE_ANSWER, data: index }) },
         card.showAnswer ? "Hide Answer" : "Show Answer"
       ),
       card.showAnswer ? div({ className: "mb-4" }, card.answer) : null,
       button(
-        { className: `${btnStyle} bg.yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.EDIT_CARD, data: index }) },
+        { className: `${btnStyle} bg.yellow-500 hover.bg-yellow-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.EDIT_CARD, data: index }) },
         "Edit Card"
       ),
       div({ className: "flex gap-2 mt-4" }, [
         button(
-          { className: `${btnStyle} bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_POOR, data: index }) },
+          { className: `${btnStyle} bg-red-500 hover.bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_POOR, data: index }) },
           "Rate Poor"
         ),
         button(
-          { className: `${btnStyle} bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_GOOD, data: index }) },
+          { className: `${btnStyle} bg-green-500 hover.bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_GOOD, data: index }) },
           "Rate Good"
         ),
         button(
-          { className: `${btnStyle} bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_EXCELLENT, data: index }) },
+          { className: `${btnStyle} bg-blue-500 hover.bg-blue-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_EXCELLENT, data: index }) },
           "Rate Excellent"
         ),
       ]),
@@ -97,7 +97,7 @@ function view(dispatch, model) {
       }),
 
       button(
-        { className: `${btnStyle} bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.ADD_CARD }) },
+        { className: `${btnStyle} bg-green-500 hover.bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.ADD_CARD }) },
         "Add Card"
       ),
     ]),
