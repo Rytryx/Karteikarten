@@ -9,10 +9,6 @@ const input = (props) => h("input", props);
 
 const btnStyle = " font-bold py-2 px-4 rounded";
 
-function sum( a , b ) {
-return a + b
-}
-
 const MSGS = {
   INPUT_CHANGE_QUESTION: "INPUT_CHANGE_QUESTION",
   INPUT_CHANGE_ANSWER: "INPUT_CHANGE_ANSWER",
@@ -267,8 +263,6 @@ const initModel = {
     { name: "Excellent", cards: [] },
   ],
 };
-
-module.exports = {update, MSGS, app}
 
 const rootNode = document.getElementById("app");
 app(initModel, update, view, rootNode);
