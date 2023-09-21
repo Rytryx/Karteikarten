@@ -26,52 +26,54 @@ const MSGS = {
 
 function view(dispatch, model) {
   function renderCard(dispatch, card, index) {
-    return div({ className: "rounded-lg shadow-lg p-4 bg-white w-96" }, [
-      h1({ className: "text-xl font-semibold mb-2" }, "Card:"),
+    return div({ className: "rounded-lg shadow-lg p-4 bg-white w-96", id: `card-${index}` }, [
+      h1({ className: "text-xl font-semibold mb-2", id: `card-title-${index}` }, "Card:"),
       card.editing ? // Prüfen, ob die Karte bearbeitet wird
-        div({ className: "mb-4" }, [
+        div({ className: "mb-4", id: `edit-card-${index}` }, [
           input({
             className: "border p-2",
+            id: `input-question-${index}`,
             oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_QUESTION, data: event.target.value }),
-            value: model.inputQuestion, // Hier verwenden wir model.inputQuestion
+            value: model.inputQuestion,
             placeholder: "Edit question...",
           }),
           input({
             className: "border p-2",
+            id: `input-answer-${index}`,
             oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_ANSWER, data: event.target.value }),
-            value: model.inputAnswer, // Hier verwenden wir model.inputAnswer
+            value: model.inputAnswer,
             placeholder: "Edit answer...",
           }),
           button(
-            { className: `${btnStyle} hover.text-yellow-700 text-yellow-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.SAVE_EDIT, data: index }) },
+            { className: `${btnStyle} hover.text-yellow-700 text-yellow-500 font-bold py-2 px-4 rounded`, id: `save-edit-button-${index}`, onclick: () => dispatch({ type: MSGS.SAVE_EDIT, data: index }) },
             "Save Edit"
           ),
         ]) :
-        div({ className: "mb-4" }, card.question),
+        div({ className: "mb-4", id: `card-question-${index}` }, card.question),
       button(
-        { className: `${btnStyle} hover.text-red-600 text-red-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.DELETE_CARD, data: index }) },
+        { className: `${btnStyle} hover.text-red-600 text-red-500 font-bold py-2 px-4 rounded`, id: `delete-card-button-${index}`, onclick: () => dispatch({ type: MSGS.DELETE_CARD, data: index }) },
         "Delete Card"
       ),
       button(
-        { className: `${btnStyle} hover.text-blue-700 text-blue-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.TOGGLE_ANSWER, data: index }) },
+        { className: `${btnStyle} hover.text-blue-700 text-blue-500 font-bold py-2 px-4 rounded`, id: `toggle-answer-button-${index}`, onclick: () => dispatch({ type: MSGS.TOGGLE_ANSWER, data: index }) },
         card.showAnswer ? "Hide Answer" : "Show Answer"
       ),
-      card.showAnswer ? div({ className: "mb-4" }, card.answer) : null,
+      card.showAnswer ? div({ className: "mb-4", id: `card-answer-${index}` }, card.answer) : null,
       button(
-        { className: `${btnStyle} hover.text-yellow-700 text-yellow-500 font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.EDIT_CARD, data: index }) },
+        { className: `${btnStyle} hover.text-yellow-700 text-yellow-500 font-bold py-2 px-4 rounded`, id: `edit-card-button-${index}`, onclick: () => dispatch({ type: MSGS.EDIT_CARD, data: index }) },
         "Edit Card"
       ),
       div({ className: "flex gap-2 mt-4" }, [
         button(
-          { className: `${btnStyle} bg-red-500 hover.bg-red-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_POOR, data: index }) },
+          { className: `${btnStyle} bg-red-500 hover.bg-red-600 text-white font-bold py-2 px-4 rounded`, id: `rate-poor-button-${index}`, onclick: () => dispatch({ type: MSGS.RATE_POOR, data: index }) },
           "Rate Poor"
         ),
         button(
-          { className: `${btnStyle} bg-green-500 hover.bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_GOOD, data: index }) },
+          { className: `${btnStyle} bg-green-500 hover.bg-green-600 text-white font-bold py-2 px-4 rounded`, id: `rate-good-button-${index}`, onclick: () => dispatch({ type: MSGS.RATE_GOOD, data: index }) },
           "Rate Good"
         ),
         button(
-          { className: `${btnStyle} bg-blue-500 hover.bg-blue-700 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.RATE_EXCELLENT, data: index }) },
+          { className: `${btnStyle} bg-blue-500 hover.bg-blue-700 text-white font-bold py-2 px-4 rounded`, id: `rate-excellent-button-${index}`, onclick: () => dispatch({ type: MSGS.RATE_EXCELLENT, data: index }) },
           "Rate Excellent"
         ),
       ]),
@@ -79,33 +81,33 @@ function view(dispatch, model) {
   }
 
   return div({ className: "flex gap-4 flex-col items-center" }, [
-    h1({ className: "text-2xl" }, `Flashcard App:`),
+    h1({ className: "text-2xl", id: "app-title" }, `Flashcard App:`),
 
     div({ className: "flex gap-4 items-center" }, [
       input({
-        className: "border p-2",
+        className: "border p-2", id: `question`,
         oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_QUESTION, data: event.target.value }),
         value: model.inputQuestion,
         placeholder: "Enter question...",
       }),
 
       input({
-        className: "border p-2",
+        className: "border p-2", id: `answer`,
         oninput: (event) => dispatch({ type: MSGS.INPUT_CHANGE_ANSWER, data: event.target.value }),
         value: model.inputAnswer,
         placeholder: "Enter answer...",
       }),
 
       button(
-        { className: `${btnStyle} bg-green-500 hover.bg-green-600 text-white font-bold py-2 px-4 rounded`, onclick: () => dispatch({ type: MSGS.ADD_CARD }) },
+        { className: `${btnStyle} bg-green-500 hover.bg-green-600 text-white font-bold py-2 px-4 rounded`, id: "add-card-button", onclick: () => dispatch({ type: MSGS.ADD_CARD }) },
         "Add Card"
       ),
     ]),
 
     div({ className: "flex flex-col mt-4" }, [
       model.cards.length > 0 ? div({ className: "flex gap-4" }, model.categories.map((category) => {
-        return div({ className: "w-96" }, [
-          h1({ className: "text-2xl" }, category.name),
+        return div({ className: "w-96", id: `category-${category.name}` }, [
+          h1({ className: "text-2xl", id: `category-title-${category.name}` }, category.name),
           div({ className: "mb-4" }, category.cards.map((cardIndex) => {
             const card = model.cards[cardIndex];
             return renderCard(dispatch, card, cardIndex);
